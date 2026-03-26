@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Scheduler</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='ui_style.css') }}" />
+  </head>
+  <body>
+    <main class="container">
+      <header class="header">
+        <h1>🚀 Task Scheduler</h1>
+      </header>
+
+      <section class="card">
+        <h2>Add Task</h2>
+        <form class="grid-form" action="/add" method="post">
+          <label>Task Name<input type="text" name="task_name" placeholder="e.g., Send report" /></label>
+
+          <label>Priority<input type="number" name="priority" min="1" placeholder="1" /></label>
+
+          <button type="submit">Add Task</button>
+        </form>
+        {% if error_message %}
+          <p class="error-message">{{ error_message }}</p>
+        {% endif %}
+      </section>
+
+      <section class="card">
+        <h2>🔥 Next Task</h2>
+        {% if next_task %}
+          <div class="next-task">
+            <p class="task-title">{{ next_task.0 }}</p>
+            <p>
+              Priority: <strong>{{ next_task.1 }}</strong>
+            </p>
+          </div>
+        {% else %}
+          <p>No tasks added yet. Add a task to view next task in que</p>
+        {% endif %}
+      </section>
+
+      <section class="card">
+        <h2>📋 All Tasks</h2>
+        {% if tasks %}
+          <div class="section-actions">
+            {# Button to execute all tasks at once #}
+            <button type="button" class="execute-btn">Execute All Tasks</button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Task</th>
+                <th>Priority</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for t in tasks %}
+                <tr>
+                  <td>{{ t.0 }}</td>
+                  <td>{{ t.1 }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p>No tasks added yet. Add a task to execute</p>
+        {% endif %}
+      </section>
+
+      {# YET TO IMPLEMENT CHANGE FUNCTIONALITY #}
+      <section class="card">
+        <h2>Change Task Priority</h2>
+        <form class="grid-form" action="#" method="post">
+          <label>
+            Select Task<select name="selected_task">
+              <option>Review invoices</option>
+              <option>Backup files</option>
+            </select>
+          </label>
+
+          <label>New Priority<input type="number" name="new_priority" min="1" placeholder="1" /></label>
+
+          <button type="button">Update Priority</button>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>

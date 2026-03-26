@@ -53,5 +53,4 @@ task_scheduler/
 ---
 
 ## Error Handling
-
 *(To be documented)*

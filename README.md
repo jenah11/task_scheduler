@@ -38,10 +38,10 @@ python app.py
 
 ## Usage
 
-1. Open the app
+1. Run the app
 2. Add a task by entering a name and a priority number
-3. Click **Execute All Tasks** to execute tasks in priority order
-4. Click **Interrupt** to stop execution at any time
+3. Click **Execute All Tasks** to execute tasks in priority order *(Yet to be added)*
+4. Click **Interrupt** to stop execution at any time *(Yet to be added)*
 
 
 [About this project](ABOUT.md)

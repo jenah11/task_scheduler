@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, jsonify
 from task_scheduler import TaskScheduler # Import the TaskScheduler class from task_scheduler.py python file (module)
+from execution_timing import build_execution_preview
 
 app = Flask(__name__)
 
@@ -9,8 +10,9 @@ scheduler = TaskScheduler()
 def home():
     tasks = scheduler.get_all_tasks()
     next_task = scheduler.peek_task()
+    execution_preview = build_execution_preview(tasks)
 
-    return render_template("ui.html", tasks=tasks, next_task=next_task)
+    return render_template("ui.html", tasks=tasks, next_task=next_task, execution_preview=execution_preview)
 
 
 @app.route("/add", methods=["POST"])
@@ -37,6 +39,22 @@ def execute_all():
     scheduler.execute_all_tasks()
 
     return redirect("/")
+
+
+@app.route("/execute-one", methods=["POST"])
+def execute_one():
+    task = scheduler.execute_first_task()
+
+    if task is None:
+        return jsonify({"ok": False, "task": None})
+
+    return jsonify({
+        "ok": True,
+        "task": {
+            "task_id": task[0],
+            "priority": task[1],
+        }
+    })
 
 
 @app.route("/change", methods=["POST"])

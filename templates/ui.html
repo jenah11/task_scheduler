@@ -5,99 +5,122 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Task Scheduler</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='ui_style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='execution_sidebar.css') }}" />
   </head>
-  <body>
-    <main class="container">
-      <header class="header">
-        <h1>Task Scheduler</h1>
-      </header>
+    <div class="app-layout">
+      <main class="container">
+        <header class="header">
+          <h1>Task Scheduler</h1>
+        </header>
 
-      <section class="card">
-        <h2>Add Task</h2>
-        <form class="grid-form" action="/add" method="post">
-          <label>Task Name<input type="text" name="task_name" placeholder="e.g., Send report" /></label>
+        <section class="card">
+          <h2>Add Task</h2>
+          <form class="grid-form" action="/add" method="post">
+            <label>Task Name<input type="text" name="task_name" placeholder="e.g., Send report" /></label>
 
-          <label>Priority<input type="number" name="priority" min="1" placeholder="1" /></label>
+            <label>Priority<input type="number" name="priority" min="1" placeholder="1" /></label>
 
-          <button type="submit">Add Task</button>
-        </form>
-        {% if error_message %}
-          <p class="error-message">{{ error_message }}</p>
-        {% endif %}
-      </section>
-
-      <section class="card">
-        <h2>Next Task</h2>
-        {% if next_task %}
-          <form action="/execute_first_task" method="post">
-            <button type="submit">
-              <span>Execute Task</span>
-            </button>
-            <br><br>
+            <button type="submit">Add Task</button>
           </form>
-          <div class="next-task">
-            <p class="task-title">{{ next_task.0 }}</p>
-            <p>
-              Priority: <strong>{{ next_task.1 }}</strong>
-            </p>
-          </div>
-        {% else %}
-          <p>No tasks added yet. Add a task to view next task in que</p>
-        {% endif %}
-      </section>
+          {% if error_message %}
+            <p class="error-message">{{ error_message }}</p>
+          {% endif %}
+        </section>
 
-      <section class="card">
-        <h2>All Tasks</h2>
-        {% if tasks %}
-          <div class="section-actions">
-            <form action="/execute-all" method="post">
-              <button type="submit" class="execute-btn btn-with-icon">
-                <i class="fi fi-br-play-alt" aria-hidden="true"></i>
-                <span>Execute All Tasks</span>
+        <section class="card">
+          <h2>Next Task</h2>
+          {% if next_task %}
+            <form action="/execute_first_task" method="post">
+              <button type="submit">
+                <span>Execute Task</span>
               </button>
+              <br><br>
             </form>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Task</th>
-                <th>Priority</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for t in tasks %}
+            <div class="next-task">
+              <p class="task-title">{{ next_task.0 }}</p>
+              <p>
+                Priority: <strong>{{ next_task.1 }}</strong>
+              </p>
+            </div>
+          {% else %}
+            <p>No tasks added yet. Add a task to view next task in que</p>
+          {% endif %}
+        </section>
+
+        <section class="card">
+          <h2>All Tasks</h2>
+          {% if tasks %}
+            <div class="section-actions">
+              <form id="executeAllForm" action="/execute-all" method="post">
+                <button type="submit" class="execute-btn btn-with-icon">
+                  <i class="fi fi-br-play-alt" aria-hidden="true"></i>
+                  <span>Execute All Tasks</span>
+                </button>
+              </form>
+            </div>
+            <table>
+              <thead>
                 <tr>
-                  <td>{{ t.0 }}</td>
-                  <td>{{ t.1 }}</td>
-                  <td>
-                    <form action="/delete" method="post">
-                      <input type="hidden" name="task" value="{{ t.0 }}" />
-                      <button type="submit" class="delete-btn icon-only-btn" aria-label="Delete {{ t.0 }}"><i class="fi fi-br-trash" aria-hidden="true"></i></button>
-                    </form>
-                  </td>
+                  <th>Task</th>
+                  <th>Priority</th>
+                  <th>Action</th>
                 </tr>
+              </thead>
+              <tbody>
+                {% for t in tasks %}
+                  <tr>
+                    <td>{{ t.0 }}</td>
+                    <td>{{ t.1 }}</td>
+                    <td>
+                      <form action="/delete" method="post">
+                        <input type="hidden" name="task" value="{{ t.0 }}" />
+                        <button type="submit" class="delete-btn icon-only-btn" aria-label="Delete {{ t.0 }}"><i class="fi fi-br-trash" aria-hidden="true"></i></button>
+                      </form>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% else %}
+            <p>No tasks added yet. Add a task to execute</p>
+          {% endif %}
+        </section>
+
+        <section class="card update-priority-section">
+          <h2>Change Task Priority</h2>
+          <form class="grid-form" action="/change" method="post">
+            <select name="task">
+              {% for t in tasks %}
+                <option value="{{ t.0 }}">{{ t.0 }} (Priority {{ t.1 }})</option>
               {% endfor %}
-            </tbody>
-          </table>
-        {% else %}
-          <p>No tasks added yet. Add a task to execute</p>
-        {% endif %}
-      </section>
+            </select>
+            <input type="number" name="priority" min="1" placeholder="New priority" required />
 
-      <section class="card update-priority-section">
-        <h2>Change Task Priority</h2>
-        <form class="grid-form" action="/change" method="post">
-          <select name="task">
-            {% for t in tasks %}
-              <option value="{{ t.0 }}">{{ t.0 }} (Priority {{ t.1 }})</option>
-            {% endfor %}
-          </select>
-          <input type="number" name="priority" min="1" placeholder="New priority" required />
+            <button type="submit">Update Priority</button>
+          </form>
+        </section>
+      </main>
 
-          <button type="submit">Update Priority</button>
-        </form>
-      </section>
-    </main>
+      <aside id="executionSidebar" class="execution-sidebar" aria-label="Execution panel">
+        <div class="execution-sidebar__header">
+          <h3>Execution Panel</h3>
+          <button type="button" id="interruptExecution" class="interrupt-btn btn-with-icon">
+            <i class="fi fi-br-hand" aria-hidden="true"></i>
+            <span>Interrupt</span>
+          </button>
+        </div>
+        <p class="execution-sidebar__subtitle">Tasks run by task name length in seconds.</p>
+        <p id="executionStatus" class="execution-status">Ready</p>
+        <div id="executionQueue" class="execution-queue"></div>
+
+        <div class="execution-tray">
+          <h4>Executed Tasks</h4>
+          <ul id="executedTaskTray" class="executed-task-list"></ul>
+        </div>
+      </aside>
+    </div>
+    <div id="executionOverlay" class="execution-overlay" hidden></div>
+    <script id="executionPreviewData" type="application/json">{{ execution_preview|tojson }}</script>
+    <script src="{{ url_for('static', filename='execution_sidebar.js') }}"></script>
   </body>
 </html>

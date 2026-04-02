@@ -1,3 +1,5 @@
+@import url('https://cdn-uicons.flaticon.com/4.0.0/uicons-bold-rounded/css/uicons-bold-rounded.css');
+
 * {
   box-sizing: border-box;
 }
@@ -65,18 +67,39 @@ button {
   color: #ffffff;
   border: none;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 button:hover {
   opacity: 0.95;
+  transform: translateY(-1px);
 }
 
 .execute-btn{
-  background: #750707;
+  background: #045714;
 }
 
 .delete-btn {
   background: #b42318;
+}
+
+.btn-with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.icon-only-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  padding: 0;
+}
+
+.icon-only-btn i {
+  font-size: 0.95rem;
 }
 
 .next-task .task-title {

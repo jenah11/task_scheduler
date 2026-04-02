@@ -9,7 +9,7 @@
   <body>
     <main class="container">
       <header class="header">
-        <h1>🚀 Task Scheduler</h1>
+        <h1>Task Scheduler</h1>
       </header>
 
       <section class="card">
@@ -27,8 +27,14 @@
       </section>
 
       <section class="card">
-        <h2>🔥 Next Task</h2>
+        <h2>Next Task</h2>
         {% if next_task %}
+          <form action="/execute_first_task" method="post">
+            <button type="submit">
+              <span>Execute Task</span>
+            </button>
+            <br><br>
+          </form>
           <div class="next-task">
             <p class="task-title">{{ next_task.0 }}</p>
             <p>
@@ -41,15 +47,14 @@
       </section>
 
       <section class="card">
-        <h2>📋 All Tasks</h2>
+        <h2>All Tasks</h2>
         {% if tasks %}
           <div class="section-actions">
             <form action="/execute-all" method="post">
-              <button type="submit" class="execute-btn">Execute All Tasks</button>
-            </form>
-
-            <form action="/execute_first_task" method="post">
-              <button type="submit" class="execute-btn">Execute First Task</button>
+              <button type="submit" class="execute-btn btn-with-icon">
+                <i class="fi fi-br-play-alt" aria-hidden="true"></i>
+                <span>Execute All Tasks</span>
+              </button>
             </form>
           </div>
           <table>
@@ -68,7 +73,7 @@
                   <td>
                     <form action="/delete" method="post">
                       <input type="hidden" name="task" value="{{ t.0 }}" />
-                      <button type="submit" class="delete-btn">Delete</button>
+                      <button type="submit" class="delete-btn icon-only-btn" aria-label="Delete {{ t.0 }}"><i class="fi fi-br-trash" aria-hidden="true"></i></button>
                     </form>
                   </td>
                 </tr>

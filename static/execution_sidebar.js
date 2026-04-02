@@ -5,14 +5,17 @@ const interruptExecution = document.getElementById("interruptExecution");
 const executedTaskTray = document.getElementById("executedTaskTray");
 const executionPreviewData = document.getElementById("executionPreviewData");
 
+// Keeps track of the current run state and the tasks that have already finished.
 let executionPreview = [];
 let isRunningPreview = false;
 let interruptRequested = false;
 let executedTasks = [];
 
+// Session key used to remember the most recently executed tasks.
 const EXECUTED_TASKS_KEY = "lastExecutedTasks";
 
 if (executionPreviewData) {
+  // The page sends task data as JSON so the script can build the preview panel.
   try {
     executionPreview = JSON.parse(executionPreviewData.textContent || "[]");
   } catch (error) {
@@ -20,10 +23,12 @@ if (executionPreviewData) {
   }
 }
 
+// Small pause helper used while animating each loading bar.
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// Updates the small message shown above the execution panel.
 function setExecutionStatus(message, tone) {
   if (!executionStatus) {
     return;
@@ -33,6 +38,7 @@ function setExecutionStatus(message, tone) {
   executionStatus.style.color = tone || "#065f46";
 }
 
+// Shows tasks that have already finished inside the bottom tray.
 function renderExecutedTray(items) {
   if (!executedTaskTray) {
     return;
@@ -54,6 +60,7 @@ function renderExecutedTray(items) {
   });
 }
 
+// Builds the list of tasks and their loading bars in the right-side panel.
 function buildQueueRows(tasks) {
   if (!executionQueue) {
     return;
@@ -82,6 +89,7 @@ function buildQueueRows(tasks) {
   });
 }
 
+// Fills the current loading bar little by little so interruption can happen mid-task.
 async function runTaskDuration(seconds, bar) {
   const totalMs = seconds * 1000;
   const stepMs = 100;
@@ -100,6 +108,7 @@ async function runTaskDuration(seconds, bar) {
   return true;
 }
 
+// Asks the server to actually remove one task from the scheduler.
 async function executeOneTaskOnServer() {
   const response = await fetch("/execute-one", {
     method: "POST",
@@ -115,10 +124,12 @@ async function executeOneTaskOnServer() {
   return response.json();
 }
 
+// Saves the executed task tray to the browser session so it can be shown again after refresh.
 function persistExecutedTasks() {
   sessionStorage.setItem(EXECUTED_TASKS_KEY, JSON.stringify(executedTasks));
 }
 
+// Restores the tray from the previous run, if the browser still has it saved.
 function loadPersistedExecutedTasks() {
   const raw = sessionStorage.getItem(EXECUTED_TASKS_KEY);
   if (!raw) {
@@ -139,6 +150,7 @@ function loadPersistedExecutedTasks() {
   renderExecutedTray([]);
 }
 
+// Runs the preview panel, waits through each task, then removes it on the server.
 async function runPreview(tasks) {
   isRunningPreview = true;
   interruptRequested = false;
@@ -196,6 +208,7 @@ async function runPreview(tasks) {
 }
 
 if (executeAllForm) {
+  // Replace the normal form submit with the animated preview flow.
   executeAllForm.addEventListener("submit", (event) => {
     if (!executionPreview.length || isRunningPreview) {
       return;
@@ -207,6 +220,7 @@ if (executeAllForm) {
 }
 
 if (interruptExecution) {
+  // Interrupt only affects an active run; otherwise it just shows a short message.
   interruptExecution.addEventListener("click", () => {
     if (!isRunningPreview) {
       setExecutionStatus("Nothing is running.", "#6b7280");
@@ -218,4 +232,5 @@ if (interruptExecution) {
   });
 }
 
+// Show any saved executed tasks as soon as the page loads.
 loadPersistedExecutedTasks();

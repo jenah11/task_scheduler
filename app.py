@@ -25,9 +25,16 @@ def add():
     return redirect("/")
     
 
-@app.route("/execute")
-def execute():
-    scheduler.execute_task()
+@app.route("/execute_first_task", methods=["POST"])
+def execute_first_task():
+    scheduler.execute_first_task()
+
+    return redirect("/")
+
+
+@app.route("/execute-all", methods=["POST"])
+def execute_all():
+    scheduler.execute_all_tasks()
 
     return redirect("/")
 

@@ -92,3 +92,8 @@ td {
   padding: 0.6rem;
   border-bottom: 1px solid #e5e7eb;
 }
+
+.section-actions{
+  display: flex;
+  gap: 0.75rem;
+}

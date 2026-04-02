@@ -20,13 +20,24 @@ class TaskScheduler:
             heapq.heappop(self.heap)
         return None
 
-    def execute_task(self):
+    def execute_first_task(self):
         while self.heap:
             priority, _, task_id = heapq.heappop(self.heap)
             if task_id in self.task_map:
                 del self.task_map[task_id]
                 return task_id, -priority
         return None
+
+    def execute_all_tasks(self):
+        executed_tasks = []
+
+        while True:
+            task = self.execute_task()
+            if task is None:
+                break
+            executed_tasks.append(task)
+
+        return executed_tasks
 
     def change_priority(self, task_id, new_priority):
         if task_id in self.task_map:

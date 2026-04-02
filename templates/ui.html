@@ -44,8 +44,13 @@
         <h2>📋 All Tasks</h2>
         {% if tasks %}
           <div class="section-actions">
-            {# Button to execute all tasks at once #}
-            <button type="button" class="execute-btn">Execute All Tasks</button>
+            <form action="/execute-all" method="post">
+              <button type="submit" class="execute-btn">Execute All Tasks</button>
+            </form>
+
+            <form action="/execute_first_task" method="post">
+              <button type="submit" class="execute-btn">Execute First Task</button>
+            </form>
           </div>
           <table>
             <thead>
